@@ -22,7 +22,6 @@ while getopts ":he:" opt; do
     \?) echo "Invalid option: -$OPTARG" >&2 && help ;;
     esac
 done
-[ -z "$remote" ] && echo "remote is a required argument" && help
 
 # Exit if this was triggered by a pull request.
 if [ "$TRAVIS_PULL_REQUEST" == "true" ] || [ -z "CHANGE_ID" ]; then
@@ -35,15 +34,17 @@ if [ -z "${environment}" ]; then
     [ ! -z "$BRANCH_NAME" ] && branch=$BRANCH_NAME
     # If using Travis
     [ ! -z "$TRAVIS_BRANCH" ] && branch=$TRAVIS_BRANCH
-    [ -z "${branch}" ] && echo "Unable to determine branch." && exit 1
     # Deploy to staging if this is on the master branch.
     [ ${branch} == "master" ] && environment=staging
     [ ${branch} == "integration" ] && environment=integration
 fi
+[ -z "environment" ] && echo "Could not determine deployment environment." && exit 1
+
+# Load all the settings from the rc files.
+load_rc
 
 # Install the AWS CLI if it is not present.
 if ! [ -x "$(command -v aws)" ]; then
-    [ ! -z "$verbose" ] && echo "Installing AWS CLI"
     pip install --user awscli
     export PATH=$PATH:$HOME/.local/bin
 fi

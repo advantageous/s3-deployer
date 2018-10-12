@@ -1,4 +1,4 @@
-# ECS Automation for CI/CD
+# S3/CloudFront Automation for CI/CD
 ## Deployment
 Deploy updated site to s3 and invalidate CloudFront cache.
 #### Usage:

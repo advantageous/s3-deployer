@@ -16,8 +16,11 @@ rc_help() {
     echo ".deployrc file or the environment-specific rc file:"
     echo
     echo "distribution=distribution-id"
-    echo "local=\"path/to/site\""
     echo "remote=\"s3://mysite.com\""
+    echo
+    echo "The following parameters are optional and will default to these values:"
+    echo
+    echo "local=."
 }
 
 load_rc () {
@@ -30,6 +33,9 @@ load_rc () {
 
     # exit if we're missing a required setting.
     [ -z "$distribution" ] && rc_help "missing distribution in .deployrc" && exit 2
-    [ -z "$local" ] && rc_help "missing local in .deployrc" && exit 2
     [ -z "$remote" ] && rc_help "missing remote in .deployrc" && exit 2
+
+    # Set defaults
+    [ -z "$local" ] && local=.
+    true
 }
